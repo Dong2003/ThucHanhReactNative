@@ -8,6 +8,7 @@ import Project5 from './bai1/Project5';
 import Project6 from './bai1/Project6';
 import Project7 from './bai1/Project7';
 import Project8 from './bai1/Project8';
+import Caculator from './bai2/Caculator';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -28,6 +29,7 @@ export default function App() {
         <Stack.Screen name="Project6" component={Project6} />
         <Stack.Screen name="Project7" component={Project7} />
         <Stack.Screen name="Project8" component={Project8} />
+        <Stack.Screen name="Caculator" component={Caculator} />
       </Stack.Navigator>
     </NavigationContainer>
   );
