@@ -10,6 +10,11 @@ import Project7 from './bai1/Project7';
 import Project8 from './bai1/Project8';
 import Caculator from './bai2/Caculator';
 import Lab2Screen from './lab2/Lab2Screen';
+import LoginScreen from './lab3/LoginScreen';
+import HomeScreenSpa from './lab3/HomeScreenSpa';
+import ServiceScreen from './lab3/ServiceScreen';
+import ServiceDetailScreen from './lab3/ServiceDetailScreen';
+import ServiceUpdateScreen from './lab3/ServiceUpdateScreen';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -22,6 +27,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="HomeSpa" component={HomeScreenSpa} options={{headerShown: false}} />
+        <Stack.Screen name="Service" component={ServiceScreen} options={{title: 'Service', headerShown: false}} />
         <Stack.Screen name="Project1" component={Project1} />
         <Stack.Screen name="Project2" component={Project2} />
         <Stack.Screen name="Project3" component={Project3} />
@@ -32,6 +39,9 @@ export default function App() {
         <Stack.Screen name="Project8" component={Project8} />
         <Stack.Screen name="Caculator" component={Caculator} />
         <Stack.Screen name="Lab2Screen" component={Lab2Screen} options={{headerShown: false}} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown: false}} />
+        <Stack.Screen name="ServiceDetail" component={ServiceDetailScreen} options={{title: 'Service detail', headerShown: false}} />
+        <Stack.Screen name="ServiceUpdate" component={ServiceUpdateScreen} options={{title: 'Service', headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
