@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { db, auth } from '../Firebase/FirebaseConfig';
-import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 
-export default function HomeScreenSpa() {
+export default function HomeScreenUser() {
   const [services, setServices] = useState([]);
+  const [search, setSearch] = useState('');
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -24,21 +25,7 @@ export default function HomeScreenSpa() {
       setServices(servicesList);
     } catch (error) {
       console.error("Lỗi danh sách dịch vụ: ", error);
-      Alert.alert("Lỗi", "Load danh sách dịch vụ thất bại");
-    }
-  };
-
-  const handleAddService = async () => {
-    try {
-      const newService = {
-        name: 'Dịch vụ mới',
-        price: '0 đ'
-      };
-      await addDoc(collection(db, 'services'), newService);
-      fetchServices();
-    } catch (error) {
-      console.error("ỗi danh sách dịch vụ: ", error);
-      Alert.alert("Lỗi", "Load danh sách dịch vụ thất bại");
+      Alert.alert("Lỗi", "Không thể tải danh sách dịch vụ");
     }
   };
 
@@ -69,6 +56,10 @@ export default function HomeScreenSpa() {
     );
   };
 
+  const filteredServices = services.filter(service =>
+    service.name && service.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -78,47 +69,49 @@ export default function HomeScreenSpa() {
           <Ionicons name="log-out-outline" size={32} color="#fff" />
         </TouchableOpacity>
       </View>
+
       {/* Logo */}
       <Image source={require('../assets/logolab3.png')} style={styles.logo} resizeMode="contain" />
-      {/* Danh sách dịch vụ */}
+
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Tìm dịch vụ theo tên..."
+        value={search}
+        onChangeText={setSearch}
+        placeholderTextColor="#aaa"
+      />
+
       <Text style={styles.sectionTitle}>Danh sách dịch vụ</Text>
-      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('Service')}>
-        <Ionicons name="add-circle" size={28} color="#F06277" />
-      </TouchableOpacity>
-      <ScrollView style={{width: '100%'}} contentContainerStyle={{alignItems: 'center', paddingBottom: 80}}>
-        {services.map((item) => (
+      
+      <ScrollView style={{width: '100%'}} contentContainerStyle={{alignItems: 'center', paddingBottom: 20}}>
+        {filteredServices.map((item) => (
           <View key={item.id} style={styles.serviceBox}>
-            <TouchableOpacity style={{flex: 1}} onPress={() => navigation.navigate('ServiceDetail', { service: item })}>
-              <Text style={styles.serviceName}>{item.name}</Text>
-              <Text style={styles.servicePrice}>{item.price}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('ServiceUpdate', { service: item })} style={{marginLeft: 8}}>
-              <Ionicons name="create-outline" size={22} color="#F06277" />
-            </TouchableOpacity>
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+              <View style={{flex: 1}}>
+                <Text style={styles.serviceName}>{item.name}</Text>
+                <Text style={styles.servicePrice}>{item.price}</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.appointmentButton}
+                onPress={() => navigation.navigate('AppointmentScreen', { service: item })}
+              >
+                <Text style={styles.appointmentButtonText}>Đặt lịch</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ))}
       </ScrollView>
+
       {/* Bottom Tab */}
       <View style={styles.bottomTab}>
-        <View style={styles.tabItem}>
-          <Ionicons name="home" size={24} color="#F06277" />
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('HomeScreenUser')} activeOpacity={0.7}>
+          <Ionicons name="home" size={26} color="#F06277" />
           <Text style={styles.tabLabelActive}>Home</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.tabItem}
-          onPress={() => navigation.navigate('TransactionScreen')}
-        >
-          <MaterialIcons name="payment" size={24} color="#aaa" />
-          <Text style={styles.tabLabel}>Transaction</Text>
         </TouchableOpacity>
-        <View style={styles.tabItem}>
-          <FontAwesome name="users" size={22} color="#aaa" />
-          <Text style={styles.tabLabel}>Customer</Text>
-        </View>
-        <View style={styles.tabItem}>
-          <Ionicons name="settings" size={24} color="#aaa" />
-          <Text style={styles.tabLabel}>Setting</Text>
-        </View>
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('ProfileScreen')} activeOpacity={0.7}>
+          <Ionicons name="person-circle" size={26} color="#aaa" />
+          <Text style={styles.tabLabel}>Profile</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -154,6 +147,18 @@ const styles = StyleSheet.create({
     height: 70,
     marginVertical: 10,
   },
+  searchInput: {
+    width: '90%',
+    height: 44,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#eee',
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    fontSize: 16,
+    marginBottom: 10,
+    color: '#333',
+  },
   sectionTitle: {
     fontWeight: 'bold',
     fontSize: 16,
@@ -163,25 +168,12 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginLeft: 24,
   },
-  addButton: {
-    position: 'absolute',
-    top: 140,
-    right: 30,
-    zIndex: 2,
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 2,
-    elevation: 2,
-  },
   serviceBox: {
     width: '90%',
     backgroundColor: '#fff',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#eee',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     padding: 16,
     marginVertical: 6,
     shadowColor: '#000',
@@ -193,40 +185,63 @@ const styles = StyleSheet.create({
   serviceName: {
     fontSize: 15,
     color: '#222',
-    flex: 1,
     fontWeight: '500',
   },
   servicePrice: {
     fontSize: 15,
     color: '#F06277',
     fontWeight: 'bold',
-    marginLeft: 8,
+    marginTop: 4,
+  },
+  appointmentButton: {
+    backgroundColor: '#F06277',
+    borderRadius: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10,
+    alignSelf: 'flex-end',
+    minWidth: 70,
+  },
+  appointmentButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 13,
   },
   bottomTab: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    height: 60,
+    height: 64,
     backgroundColor: '#fff',
     flexDirection: 'row',
     borderTopWidth: 1,
     borderColor: '#eee',
     justifyContent: 'space-around',
     alignItems: 'center',
-    paddingBottom: 4,
+    paddingBottom: 6,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
   },
   tabItem: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 6,
   },
   tabLabel: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#aaa',
     marginTop: 2,
+    fontWeight: '500',
   },
   tabLabelActive: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#F06277',
     marginTop: 2,
     fontWeight: 'bold',

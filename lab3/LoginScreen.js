@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import RegisterScreen from './RegisterScreen';
-import HomeScreenSpa from './HomeScreenSpa';
+import ForgotPasswordScreen from './ForgotPasswordScreen';
+import HomeScreenUser from './HomeScreenUser';
 import { auth } from '../Firebase/FirebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
@@ -12,6 +13,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigation = useNavigation();
@@ -26,7 +28,17 @@ export default function LoginScreen() {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
       setIsLoggedIn(true);
-      navigation.replace('HomeSpa');
+      if (email === 'admin@gmail.com') {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'HomeScreenSpa' }],
+        });
+      } else {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'HomeScreenUser' }],
+        });
+      }
     } catch (error) {
       let errorMessage = 'Đã xảy ra lỗi khi đăng nhập';
       if (error.code === 'auth/invalid-email') {
@@ -46,6 +58,10 @@ export default function LoginScreen() {
 
   if (showRegister) {
     return <RegisterScreen onBack={() => setShowRegister(false)} />;
+  }
+
+  if (showForgotPassword) {
+    return <ForgotPasswordScreen onBack={() => setShowForgotPassword(false)} />;
   }
 
   return (
@@ -79,6 +95,12 @@ export default function LoginScreen() {
           <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="#aaa" />
         </TouchableOpacity>
       </View>
+      <TouchableOpacity 
+        style={styles.forgotPasswordButton}
+        onPress={() => setShowForgotPassword(true)}
+      >
+        <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
+      </TouchableOpacity>
       <TouchableOpacity 
         style={[styles.button, loading && styles.buttonDisabled]} 
         onPress={handleLogin}
@@ -169,6 +191,16 @@ const styles = StyleSheet.create({
     color: '#F06277',
     fontWeight: 'bold',
     fontSize: 16,
+    textDecorationLine: 'underline',
+  },
+  forgotPasswordButton: {
+    alignSelf: 'flex-end',
+    marginBottom: 20,
+    marginRight: 20,
+  },
+  forgotPasswordText: {
+    color: '#F06277',
+    fontSize: 14,
     textDecorationLine: 'underline',
   },
 }); 

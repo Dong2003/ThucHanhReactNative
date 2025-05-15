@@ -15,6 +15,10 @@ import HomeScreenSpa from './lab3/HomeScreenSpa';
 import ServiceScreen from './lab3/ServiceScreen';
 import ServiceDetailScreen from './lab3/ServiceDetailScreen';
 import ServiceUpdateScreen from './lab3/ServiceUpdateScreen';
+import HomeScreenUser from './lab3/HomeScreenUser';
+import AppointmentScreen from './lab3/AppointmentScreen';
+import TransactionScreen from './lab3/TransactionScreen';
+import ProfileScreen from './lab3/ProfileScreen';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -27,7 +31,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="HomeSpa" component={HomeScreenSpa} options={{headerShown: false}} />
+        <Stack.Screen name="HomeScreenSpa" component={HomeScreenSpa} options={{headerShown: false}} />
         <Stack.Screen name="Service" component={ServiceScreen} options={{title: 'Service', headerShown: false}} />
         <Stack.Screen name="Project1" component={Project1} />
         <Stack.Screen name="Project2" component={Project2} />
@@ -42,6 +46,10 @@ export default function App() {
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown: false}} />
         <Stack.Screen name="ServiceDetail" component={ServiceDetailScreen} options={{title: 'Service detail', headerShown: false}} />
         <Stack.Screen name="ServiceUpdate" component={ServiceUpdateScreen} options={{title: 'Service', headerShown: false}} />
+        <Stack.Screen name="HomeScreenUser" component={HomeScreenUser} options={{headerShown: false}} />
+        <Stack.Screen name="AppointmentScreen" component={AppointmentScreen} options={{title: 'Appointment', headerShown: false}} />
+        <Stack.Screen name="TransactionScreen" component={TransactionScreen} options={{title: 'Transaction', headerShown: false}} />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{title: 'Profile', headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
