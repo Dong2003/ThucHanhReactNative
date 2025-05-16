@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { auth } from '../Firebase/FirebaseConfig';
+import { auth, db } from '../Firebase/FirebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, addDoc } from 'firebase/firestore';
 
 export default function RegisterScreen({ onBack }) {
   const [email, setEmail] = useState('');
@@ -21,7 +22,12 @@ export default function RegisterScreen({ onBack }) {
       return;
     }
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Lưu thông tin user vào Firestore
+      await addDoc(collection(db, 'users'), {
+        email: userCredential.user.email,
+        createdAt: new Date().toISOString(),
+      });
       Alert.alert('Thành công', 'Đăng ký thành công!');
       setEmail(''); setPassword(''); setConfirmPassword('');
       onBack();

@@ -111,14 +111,13 @@ export default function HomeScreenSpa() {
           <MaterialIcons name="payment" size={24} color="#aaa" />
           <Text style={styles.tabLabel}>Transaction</Text>
         </TouchableOpacity>
-        <View style={styles.tabItem}>
+        <TouchableOpacity
+          style={styles.tabItem}
+          onPress={() => navigation.navigate('CustomerScreen')}
+        >
           <FontAwesome name="users" size={22} color="#aaa" />
           <Text style={styles.tabLabel}>Customer</Text>
-        </View>
-        <View style={styles.tabItem}>
-          <Ionicons name="settings" size={24} color="#aaa" />
-          <Text style={styles.tabLabel}>Setting</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

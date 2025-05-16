@@ -19,6 +19,8 @@ import HomeScreenUser from './lab3/HomeScreenUser';
 import AppointmentScreen from './lab3/AppointmentScreen';
 import TransactionScreen from './lab3/TransactionScreen';
 import ProfileScreen from './lab3/ProfileScreen';
+import HomeScreenLab6 from './lab6/HomeScreenLab6';
+import CustomerScreen from './lab3/CustomerScreen';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -50,6 +52,8 @@ export default function App() {
         <Stack.Screen name="AppointmentScreen" component={AppointmentScreen} options={{title: 'Appointment', headerShown: false}} />
         <Stack.Screen name="TransactionScreen" component={TransactionScreen} options={{title: 'Transaction', headerShown: false}} />
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{title: 'Profile', headerShown: false}} />
+        <Stack.Screen name="CustomerScreen" component={CustomerScreen} options={{title: 'Customer', headerShown: false}} />
+        <Stack.Screen name="HomeScreenLab6" component={HomeScreenLab6} options={{title: 'Home', headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
